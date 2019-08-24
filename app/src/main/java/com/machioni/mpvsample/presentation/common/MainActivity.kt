@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity(), FlowProvider {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            cicerone.router.newRootScreen(SomethingListScreen())
+            cicerone.router.newRootScreen(MovieListScreen())
         }
     }
 

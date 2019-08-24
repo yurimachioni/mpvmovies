@@ -1,20 +1,20 @@
-package com.machioni.mpvsample.presentation.scene.somethingdetail
+package com.machioni.mpvsample.presentation.scene.moviedetail
 
 import androidx.lifecycle.Lifecycle
 import com.machioni.mpvsample.common.MyApplication
-import com.machioni.mpvsample.domain.model.Something
-import com.machioni.mpvsample.domain.usecase.GetSomethingById
+import com.machioni.mpvsample.domain.model.Movie
+import com.machioni.mpvsample.domain.usecase.GetMovieById
 import io.mockk.*
 import io.reactivex.Single
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import ru.terrakok.cicerone.Router
 
-internal class SomethingDetailFragmentTest{
+internal class MovieDetailFragmentTest{
     private val id = 1
-    private val fragment by lazy { spyk(SomethingDetailFragment.newInstance(id), recordPrivateCalls = true) }
-    private val view = mockk<SomethingDetailView>(relaxed = true)
-    private val getSomethingById = mockk<GetSomethingById>(relaxed = true)
+    private val fragment by lazy { spyk(MovieDetailFragment.newInstance(id), recordPrivateCalls = true) }
+    private val view = mockk<MovieDetailView>(relaxed = true)
+    private val getMovieById = mockk<GetMovieById>(relaxed = true)
     private val router = mockk<Router>(relaxed = true)
 
     @BeforeEach
@@ -22,15 +22,15 @@ internal class SomethingDetailFragmentTest{
         mockkObject(MyApplication.Companion)
         every { MyApplication.daggerComponent } returns mockk(relaxed = true)
         fragment.view = view
-        fragment.getSomethingById = getSomethingById
+        fragment.getMovieById = getMovieById
         every { fragment.router } returns router
-        fragment.somethingId = id
+        fragment.movieId = id
     }
 
     @Test
-    fun `on first load, the passed something is retrieved by id and the view is called to display it`(){
+    fun `on first load, the passed movie is retrieved by id and the view is called to display it`(){
         //given
-        every { getSomethingById.getSingle(any()) } returns Single.just(Something(id))
+        every { getMovieById.getSingle(any()) } returns Single.just(Movie(id))
 
         //when
         fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
@@ -39,15 +39,15 @@ internal class SomethingDetailFragmentTest{
         //then
         verifyOrder {
             view.displayLoading()
-            getSomethingById.getSingle(id)
-            view.displaySomething(any())
+            getMovieById.getSingle(id)
+            view.displayMovie(any())
         }
     }
 
     @Test
     fun `the content is not refreshed when the view is recreated`(){
         //given
-        every { getSomethingById.getSingle(any()) } returns Single.just(Something(1))
+        every { getMovieById.getSingle(any()) } returns Single.just(Movie(1))
 
         //when
         fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
@@ -56,7 +56,7 @@ internal class SomethingDetailFragmentTest{
 
         //then
         verify(exactly = 1) {
-            view.displaySomething(any())
+            view.displayMovie(any())
         }
     }
 }

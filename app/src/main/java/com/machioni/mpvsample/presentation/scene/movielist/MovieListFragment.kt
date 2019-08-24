@@ -1,22 +1,22 @@
-package com.machioni.mpvsample.presentation.scene.somethinglist
+package com.machioni.mpvsample.presentation.scene.movielist
 
 import com.evernote.android.state.State
 import com.machioni.mpvsample.common.MyApplication
-import com.machioni.mpvsample.domain.model.Something
-import com.machioni.mpvsample.domain.usecase.GetSomethings
+import com.machioni.mpvsample.domain.model.Movie
+import com.machioni.mpvsample.domain.usecase.GetMovies
 import com.machioni.mpvsample.presentation.common.BackButtonListener
 import com.machioni.mpvsample.presentation.common.BaseFragment
-import com.machioni.mpvsample.presentation.common.SomethingDetailScreen
+import com.machioni.mpvsample.presentation.common.MovieDetailScreen
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
-class SomethingListFragment : BaseFragment(), BackButtonListener {
+class MovieListFragment : BaseFragment(), BackButtonListener {
 
     @Inject
-    override lateinit var view: SomethingListView
+    override lateinit var view: MovieListView
 
     @Inject
-    lateinit var getSomethings: GetSomethings
+    lateinit var getMovies: GetMovies
 
     @State
     var totalItemsViewed = 1
@@ -26,28 +26,28 @@ class SomethingListFragment : BaseFragment(), BackButtonListener {
     }
 
     companion object {
-        fun newInstance(): SomethingListFragment = SomethingListFragment()
+        fun newInstance(): MovieListFragment = MovieListFragment()
     }
 
     override fun onFirstLoad() {
         bindToView()
-        getSomethings()
+        getMovies()
     }
 
     private fun bindToView(){
-        view.onItemClickedObservable.subscribe{ somethingId ->
+        view.onItemClickedObservable.subscribe{ movieId ->
             view.displayToast("total items viewed: ${totalItemsViewed++}")
-            router.navigateTo(SomethingDetailScreen(somethingId))
+            router.navigateTo(MovieDetailScreen(movieId))
         }.addTo(disposables)
     }
 
-    private fun getSomethings(){
+    private fun getMovies(){
         view.displayLoading()
-        getSomethings.getSingle(Unit)
-                .map { it.map(Something::toViewModel) }
+        getMovies.getSingle(Unit)
+                .map { it.map(Movie::toViewModel) }
                 .delayUntilActive()
                 .subscribe({
-                    view.displaySomethings(it)
+                    view.displayMovies(it)
                 }, {
                     view.displayToast("Erro")
                 }).addTo(disposables)

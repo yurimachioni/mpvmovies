@@ -1,12 +1,12 @@
 package com.machioni.mpvsample.common.di
 
 import android.content.Context
-import com.machioni.mpvsample.presentation.scene.somethingdetail.SomethingDetailFragment
-import com.machioni.mpvsample.presentation.scene.somethingdetail.SomethingDetailView
-import com.machioni.mpvsample.presentation.scene.somethingdetail.SomethingDetailUI
-import com.machioni.mpvsample.presentation.scene.somethinglist.SomethingListFragment
-import com.machioni.mpvsample.presentation.scene.somethinglist.SomethingListView
-import com.machioni.mpvsample.presentation.scene.somethinglist.SomethingListUI
+import com.machioni.mpvsample.presentation.scene.moviedetail.MovieDetailFragment
+import com.machioni.mpvsample.presentation.scene.moviedetail.MovieDetailView
+import com.machioni.mpvsample.presentation.scene.moviedetail.MovieDetailUI
+import com.machioni.mpvsample.presentation.scene.movielist.MovieListFragment
+import com.machioni.mpvsample.presentation.scene.movielist.MovieListView
+import com.machioni.mpvsample.presentation.scene.movielist.MovieListUI
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -32,13 +32,13 @@ class ApplicationModule(private val context: Context) {
     fun mainScheduler() = AndroidSchedulers.mainThread()
 
     @Provides
-    fun somethingDetailView(somethingDetailUI: SomethingDetailUI) : SomethingDetailView{
-        return somethingDetailUI
+    fun movieDetailView(movieDetailUI: MovieDetailUI) : MovieDetailView{
+        return movieDetailUI
     }
 
     @Provides
-    fun somethingListView(somethingListUI: SomethingListUI) : SomethingListView{
-        return somethingListUI
+    fun movieListView(movieListUI: MovieListUI) : MovieListView{
+        return movieListUI
     }
 }
 
@@ -54,6 +54,6 @@ interface ApplicationComponent {
     @MainScheduler
     fun mainScheduler(): Scheduler
 
-    fun inject(somethingDetailFragment: SomethingDetailFragment)
-    fun inject(somethingListFragment: SomethingListFragment)
+    fun inject(movieDetailFragment: MovieDetailFragment)
+    fun inject(movieListFragment: MovieListFragment)
 }

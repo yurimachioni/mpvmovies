@@ -1,4 +1,4 @@
-package com.machioni.mpvsample.presentation.scene.somethinglist
+package com.machioni.mpvsample.presentation.scene.movielist
 
 import android.view.View
 import android.widget.Toast
@@ -7,24 +7,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.machioni.mpvsample.R
 import com.machioni.mpvsample.presentation.common.BaseUI
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.fragment_something_list.*
+import kotlinx.android.synthetic.main.fragment_movie_list.*
 import kotlinx.android.synthetic.main.loading.*
 import javax.inject.Inject
 
-class SomethingListUI @Inject constructor() : BaseUI(), SomethingListView {
+class MovieListUI @Inject constructor() : BaseUI(), MovieListView {
 
-    @LayoutRes override val layoutId = R.layout.fragment_something_list
+    @LayoutRes override val layoutId = R.layout.fragment_movie_list
 
-    private val adapter = SomethingListAdapter()
+    private val adapter = MovieListAdapter()
 
     override val onItemClickedObservable: Observable<Int> = adapter.onItemClick()
 
     override fun initViews(){
-        somethingRecycler.adapter = adapter
-        somethingRecycler.layoutManager = LinearLayoutManager(context)
+        movieRecycler.adapter = adapter
+        movieRecycler.layoutManager = LinearLayoutManager(context)
     }
 
-    override fun displaySomethings(list: List<SomethingListVM>){
+    override fun displayMovies(list: List<MovieListVM>){
         loadingLayout.visibility = View.GONE
         adapter.setData(list)
     }

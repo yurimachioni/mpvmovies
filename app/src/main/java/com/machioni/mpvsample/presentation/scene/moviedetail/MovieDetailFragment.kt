@@ -1,43 +1,43 @@
-package com.machioni.mpvsample.presentation.scene.somethingdetail
+package com.machioni.mpvsample.presentation.scene.moviedetail
 
 import com.evernote.android.state.State
 import com.machioni.mpvsample.common.MyApplication
-import com.machioni.mpvsample.domain.usecase.GetSomethingById
+import com.machioni.mpvsample.domain.usecase.GetMovieById
 import com.machioni.mpvsample.presentation.common.BackButtonListener
 import com.machioni.mpvsample.presentation.common.BaseFragment
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
-class SomethingDetailFragment : BaseFragment(), BackButtonListener {
+class MovieDetailFragment : BaseFragment(), BackButtonListener {
 
     @Inject
-    override lateinit var view: SomethingDetailView
+    override lateinit var view: MovieDetailView
 
     @Inject
-    lateinit var getSomethingById: GetSomethingById
+    lateinit var getMovieById: GetMovieById
 
     @State
-    var somethingId = 1
+    var movieId = 1
 
     init{
         MyApplication.daggerComponent.inject(this)
     }
 
     companion object {
-        fun newInstance(id: Int): SomethingDetailFragment = SomethingDetailFragment().apply{ somethingId = id }
+        fun newInstance(id: Int): MovieDetailFragment = MovieDetailFragment().apply{ movieId = id }
     }
 
     override fun onFirstLoad() {
-        getSomethingById()
+        getMovieById()
     }
 
-    private fun getSomethingById(){
+    private fun getMovieById(){
         view.displayLoading()
-        getSomethingById.getSingle(somethingId)
+        getMovieById.getSingle(movieId)
                 .map { it.toViewModel() }
                 .delayUntilActive()
                 .subscribe({
-                    view.displaySomething(it)
+                    view.displayMovie(it)
                 }, {
 
                 }).addTo(disposables)

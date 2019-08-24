@@ -1,22 +1,20 @@
-package com.machioni.mpvsample.presentation.scene.somethinglist
+package com.machioni.mpvsample.presentation.scene.movielist
 
 import androidx.lifecycle.Lifecycle
 import com.machioni.mpvsample.common.MyApplication
-import com.machioni.mpvsample.common.di.ApplicationComponent
-import com.machioni.mpvsample.domain.model.Something
-import com.machioni.mpvsample.domain.usecase.GetSomethings
+import com.machioni.mpvsample.domain.model.Movie
+import com.machioni.mpvsample.domain.usecase.GetMovies
 import io.mockk.*
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.subjects.BehaviorSubject
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import ru.terrakok.cicerone.Router
 
-internal class SomethingListFragmentTest{
-    private val fragment by lazy { spyk<SomethingListFragment>(recordPrivateCalls = true) }
-    private val view = mockk<SomethingListView>(relaxed = true)
-    private val getSomethings = mockk<GetSomethings>(relaxed = true)
+internal class MovieListFragmentTest{
+    private val fragment by lazy { spyk<MovieListFragment>(recordPrivateCalls = true) }
+    private val view = mockk<MovieListView>(relaxed = true)
+    private val getMovies = mockk<GetMovies>(relaxed = true)
     private val router = mockk<Router>(relaxed = true)
 
     @BeforeEach
@@ -24,14 +22,14 @@ internal class SomethingListFragmentTest{
         mockkObject(MyApplication.Companion)
         every { MyApplication.daggerComponent } returns mockk(relaxed = true)
         fragment.view = view
-        fragment.getSomethings = getSomethings
+        fragment.getMovies = getMovies
         every { fragment.router } returns router
     }
 
     @Test
-    fun `on first load, the list of somethings is retrieved and the view is called to display it`(){
+    fun `on first load, the list of movies is retrieved and the view is called to display it`(){
         //given
-        every { getSomethings.getSingle(any()) } returns Single.just(listOf(Something(1)))
+        every { getMovies.getSingle(any()) } returns Single.just(listOf(Movie(1)))
 
         //when
         fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
@@ -40,15 +38,15 @@ internal class SomethingListFragmentTest{
         //then
         verifyOrder {
             view.displayLoading()
-            getSomethings.getSingle(any())
-            view.displaySomethings(any())
+            getMovies.getSingle(any())
+            view.displayMovies(any())
         }
     }
 
     @Test
     fun `the list is not refreshed when the view is recreated`(){
         //given
-        every { getSomethings.getSingle(any()) } returns Single.just(listOf(Something(1)))
+        every { getMovies.getSingle(any()) } returns Single.just(listOf(Movie(1)))
 
         //when
         fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)

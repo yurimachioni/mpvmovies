@@ -63,7 +63,7 @@ internal class MovieListPresenterTest{
     fun `when an item is clicked on the view, it displays a toast and navigates to details of the item`(){
         //given
         val id = 1
-        every { view.onItemClickedObservable } returns Observable.just(id)
+        every { view.itemClicksObservable } returns Observable.just(id)
         every { router.navigateTo(any()) } just Runs
 
         //when

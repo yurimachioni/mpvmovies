@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Liber Movies</string>
+    <string name="year">Year %1$s</string>
 </resources>

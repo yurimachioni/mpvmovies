@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import ru.terrakok.cicerone.Router
 
-internal class MovieDetailFragmentTest{
+internal class MovieDetailPresenterTest{
     private val id = 1
     private val fragment by lazy { spyk(MovieDetailPresenter.newInstance(id), recordPrivateCalls = true) }
     private val view = mockk<MovieDetailView>(relaxed = true)

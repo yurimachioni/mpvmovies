@@ -17,14 +17,14 @@ class MovieDetailPresenter : BasePresenter(), BackButtonListener {
     lateinit var getMovieById: GetMovieById
 
     @State
-    var movieId = 1
+    var movieId = "-1"
 
     init{
         MyApplication.daggerComponent.inject(this)
     }
 
     companion object {
-        fun newInstance(id: Int): MovieDetailPresenter = MovieDetailPresenter().apply{ movieId = id }
+        fun newInstance(id: String): MovieDetailPresenter = MovieDetailPresenter().apply{ movieId = id }
     }
 
     override fun onFirstLoad() {

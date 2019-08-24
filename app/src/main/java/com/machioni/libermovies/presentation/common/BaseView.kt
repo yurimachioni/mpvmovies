@@ -11,6 +11,5 @@ interface BaseView : LayoutContainer {
     val context : Context
 
     fun inflate(context: Context, parent: ViewGroup?) : View?
-    fun getString(@StringRes id: Int) : String = context.getString(id)
     fun initViews()
 }

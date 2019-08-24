@@ -11,6 +11,6 @@ class MovieListScreen : Screen() {
     override fun getFragment(): Fragment = MovieListPresenter.newInstance()
 }
 
-class MovieDetailScreen(private val movieId: Int) : Screen() {
+class MovieDetailScreen(private val movieId: String) : Screen() {
     override fun getFragment(): Fragment = MovieDetailPresenter.newInstance(movieId)
 }

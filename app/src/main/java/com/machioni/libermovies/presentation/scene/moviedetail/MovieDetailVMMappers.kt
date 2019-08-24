@@ -1,5 +1,5 @@
 package com.machioni.libermovies.presentation.scene.moviedetail
 
-import com.machioni.libermovies.domain.model.Movie
+import com.machioni.libermovies.domain.model.DetailedMovie
 
-fun Movie.toViewModel() = MovieDetailVM(id, text, imgUrl)
+fun DetailedMovie.toViewModel() = DetailedMovieVM(title, year, imdbId, posterUrl, plot, country,duration, imdbRating)

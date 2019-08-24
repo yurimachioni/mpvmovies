@@ -18,10 +18,15 @@ class MovieDetailUI @Inject constructor() : BaseUI(), MovieDetailView {
 
     }
 
-    override fun displayMovie(movieDetail: MovieDetailVM){
+    override fun displayMovie(detailedMovie: DetailedMovieVM){
         loadingLayout?.visibility = View.GONE
-        Glide.with(context).load(movieDetail.imgUrl).into(movieImageView)
-        movieTextView.text = movieDetail.text
+        with(detailedMovie) {
+            Glide.with(context).load(posterUrl).into(posterImageView)
+            titleTextView.text = title
+            sinopsisTextView.text = plot
+            yearTextView.text = context.getString(R.string.year, year)
+            durationTextView.text = duration
+        }
     }
 
     override fun displayLoading() {

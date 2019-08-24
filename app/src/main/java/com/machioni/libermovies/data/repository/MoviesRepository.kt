@@ -14,7 +14,7 @@ class MoviesRepository @Inject constructor(
     private val moviesRemoteDataSource: MoviesRemoteDataSource) : MoviesRepositoryInterface{
 
     override fun getMovies(searchParam: String) : Single<List<Movie>> {
-        return moviesRemoteDataSource.getMovies(searchParam).map { it.map(MovieRM::toDomainModel) }
+        return moviesRemoteDataSource.getMovies(searchParam).map { it.search.map(MovieRM::toDomainModel) }
     }
 
     override fun getMovieDetails(id: String): Single<DetailedMovie> {

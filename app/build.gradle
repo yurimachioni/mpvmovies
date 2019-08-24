@@ -59,16 +59,18 @@ dependencies {
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:2.2.0"
     implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:2.2.0"
 
-    implementation "com.github.bumptech.glide:glide:4.8.0"
-    kapt "com.github.bumptech.glide:compiler:4.8.0"
+    implementation "com.github.bumptech.glide:glide:4.9.0"
+    kapt "com.github.bumptech.glide:compiler:4.9.0"
     implementation "com.xwray:groupie:2.3.0"
     implementation "com.xwray:groupie-kotlin-android-extensions:2.3.0"
 
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
     implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
-    implementation "com.squareup.retrofit2:converter-moshi:2.4.0"
-    implementation "com.squareup.moshi:moshi-kotlin:1.8.0"
+    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
 
     //state
     implementation 'com.evernote:android-state:1.4.1'

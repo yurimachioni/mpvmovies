@@ -7,4 +7,4 @@ import com.machioni.libermovies.domain.model.Movie
 
 fun MovieRM.toDomainModel() = Movie(title, year, imdbId, posterUrl)
 
-fun DetailedMovieRM.toDomainModel() = DetailedMovie(title, year, imdbId, posterUrl, plot, country, duration)
+fun DetailedMovieRM.toDomainModel() = DetailedMovie(title, year, imdbId, posterUrl, plot, country, duration, imdbRating)

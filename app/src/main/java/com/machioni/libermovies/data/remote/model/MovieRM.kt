@@ -1,17 +1,17 @@
 package com.machioni.libermovies.data.remote.model
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
 data class MovieRM(
-        @Json(name = "Title")
+        @SerializedName("Title")
         val title: String,
 
-        @Json(name = "Year")
+        @SerializedName("Year")
         val year: String,
 
-        @Json(name = "imdbID")
-        val imdbId: Float,
+        @SerializedName("imdbID")
+        val imdbId: String,
 
-        @Json(name = "Poster")
+        @SerializedName("Poster")
         val posterUrl: String
 )

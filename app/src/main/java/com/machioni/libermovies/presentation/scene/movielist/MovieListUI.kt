@@ -17,14 +17,14 @@ class MovieListUI @Inject constructor() : BaseUI(), MovieListView {
 
     private val adapter = MovieListAdapter()
 
-    override val onItemClickedObservable: Observable<Int> = adapter.onItemClick()
+    override val onItemClickedObservable: Observable<String> = adapter.onItemClick()
 
     override fun initViews(){
         movieRecycler.adapter = adapter
         movieRecycler.layoutManager = LinearLayoutManager(context)
     }
 
-    override fun displayMovies(list: List<MovieListVM>){
+    override fun displayMovies(list: List<MovieVM>){
         loadingLayout.visibility = View.GONE
         adapter.setData(list)
     }

@@ -4,9 +4,9 @@ import com.machioni.libermovies.presentation.common.BaseView
 import io.reactivex.Observable
 
 interface MovieListView : BaseView {
-    val onItemClickedObservable: Observable<Int>
+    val onItemClickedObservable: Observable<String>
 
-    fun displayMovies(list: List<MovieListVM>)
+    fun displayMovies(list: List<MovieVM>)
     fun displayToast(text: String)
     fun displayLoading()
 }

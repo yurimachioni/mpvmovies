@@ -18,9 +18,6 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
     @Inject
     lateinit var getMovies: GetMovies
 
-    @State
-    var totalItemsViewed = 1
-
     init{
         MyApplication.daggerComponent.inject(this)
     }
@@ -36,7 +33,6 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
 
     private fun bindToView(){
         view.onItemClickedObservable.subscribe{ movieId ->
-            view.displayToast("total items viewed: ${totalItemsViewed++}")
             router.navigateTo(MovieDetailScreen(movieId))
         }.addTo(disposables)
     }
@@ -49,7 +45,7 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
                 .subscribe({
                     view.displayMovies(it)
                 }, {
-                    view.displayToast("Erro")
+
                 }).addTo(disposables)
     }
 

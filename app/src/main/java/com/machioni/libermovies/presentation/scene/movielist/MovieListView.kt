@@ -11,6 +11,9 @@ interface MovieListView : BaseView {
 
     fun updateMovie(movieVM: MovieVM)
     fun displayMovies(list: List<MovieVM>)
+    fun displayInstructions()
+    fun displayEmptyState()
+    fun displayError()
     fun displayLoading()
     fun dismissLoading()
 }

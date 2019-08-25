@@ -3,4 +3,7 @@
     <string name="year">Year: %1$s</string>
     <string name="search_by_name">Search by name</string>
     <string name="imdb_rating">IMDb Rating: %1$s/10</string>
+    <string name="type_to_search">Type at least 3 characters to start searching.</string>
+    <string name="not_found">No movies found. Please, try some other terms.</string>
+    <string name="error">Oops, something went wrong!</string>
 </resources>

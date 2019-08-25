@@ -4,5 +4,7 @@ import com.machioni.libermovies.presentation.common.BaseView
 
 interface MovieDetailView : BaseView {
     fun displayMovie(detailedMovie: DetailedMovieVM)
+    fun displayError()
     fun displayLoading()
+    fun dismissLoading()
 }

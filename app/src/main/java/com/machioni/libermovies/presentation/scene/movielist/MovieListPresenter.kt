@@ -10,6 +10,7 @@ import com.machioni.libermovies.presentation.common.BasePresenter
 import com.machioni.libermovies.presentation.common.MovieDetailScreen
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
+import kotlinx.android.synthetic.main.fragment_movie_list.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -37,15 +38,17 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
 
     override fun onFirstLoad() {
         bindToView()
+        view.displayInstructions()
     }
 
     private fun bindToView() {
         view.itemClicksObservable.subscribe { movieId ->
+            searchEditText.clearFocus()
             router.navigateTo(MovieDetailScreen(movieId))
         }.addTo(disposables)
 
         view.searchChangesSubject
-                .debounce(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .debounce(600, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .filter { it.length > 2 }
                 .distinctUntilChanged()
                 .switchMapCompletable {
@@ -53,8 +56,13 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
                             .map { it.map(Movie::toViewModel) }
                             .doOnSubscribe { view.displayLoading() }
                             .delayUntilActive()
-                            .doOnSuccess { view.displayMovies(it) }
-                            .doOnError { }
+                            .doOnSuccess { movies ->
+                                if (movies.isEmpty())
+                                    view.displayEmptyState()
+                                else
+                                    view.displayMovies(movies)
+                            }
+                            .doOnError { view.displayError() }
                             .doFinally { view.dismissLoading() }
                             .ignoreElement()
                             .onErrorComplete()

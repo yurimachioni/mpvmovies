@@ -20,6 +20,9 @@ class MovieDetailUI @Inject constructor() : BaseUI(), MovieDetailView {
 
     override fun displayMovie(detailedMovie: DetailedMovieVM){
         loadingLayout?.visibility = View.GONE
+        contentRelative.visibility = View.VISIBLE
+        errorTextView.visibility = View.GONE
+
         with(detailedMovie) {
             Glide.with(context).load(posterUrl).into(posterImageView)
             titleTextView.text = title
@@ -31,7 +34,16 @@ class MovieDetailUI @Inject constructor() : BaseUI(), MovieDetailView {
         }
     }
 
+    override fun displayError() {
+        contentRelative.visibility = View.GONE
+        errorTextView.visibility = View.VISIBLE
+    }
+
     override fun displayLoading() {
         loadingLayout?.visibility = View.VISIBLE
+    }
+
+    override fun dismissLoading() {
+        loadingLayout?.visibility = View.GONE
     }
 }

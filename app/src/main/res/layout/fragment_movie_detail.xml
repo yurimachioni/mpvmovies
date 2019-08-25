@@ -1,62 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#EEEEFF">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/posterImageView"
+    <RelativeLayout
+        android:id="@+id/contentRelative"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"/>
+        android:layout_height="match_parent"
+        android:background="#EEEEFF">
+
+        <ImageView
+            android:id="@+id/posterImageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/posterImageView"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/sinopsisTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleTextView"
+            android:layout_marginStart="20dp" />
+
+        <TextView
+            android:id="@+id/yearTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sinopsisTextView"
+            android:layout_marginStart="20dp" />
+
+        <TextView
+            android:id="@+id/durationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sinopsisTextView"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp" />
+
+        <TextView
+            android:id="@+id/ratingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/yearTextView"
+            android:layout_marginStart="20dp" />
+
+        <TextView
+            android:id="@+id/countryTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/durationTextView"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp" />
+
+        <include layout="@layout/loading" />
+
+    </RelativeLayout>
 
     <TextView
-        android:id="@+id/titleTextView"
-        android:layout_margin="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textSize="22sp"
-        android:layout_below="@id/posterImageView" />
-
-    <TextView
-        android:id="@+id/sinopsisTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/titleTextView"
-        android:layout_marginStart="20dp"/>
-
-    <TextView
-        android:id="@+id/yearTextView"
+        android:id="@+id/errorTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sinopsisTextView"
-        android:layout_marginStart="20dp"/>
-
-    <TextView
-        android:id="@+id/durationTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/sinopsisTextView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp"/>
-
-    <TextView
-        android:id="@+id/ratingTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/yearTextView"
-        android:layout_marginStart="20dp"/>
-
-    <TextView
-        android:id="@+id/countryTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/durationTextView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp"/>
-
-    <include layout="@layout/loading"/>
-
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:text="@string/error" />
 </RelativeLayout>

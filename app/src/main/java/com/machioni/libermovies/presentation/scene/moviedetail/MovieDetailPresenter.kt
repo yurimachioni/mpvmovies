@@ -28,18 +28,20 @@ class MovieDetailPresenter : BasePresenter(), BackButtonListener {
     }
 
     override fun onFirstLoad() {
+        hideKeyboard()
         getMovieById()
     }
 
     private fun getMovieById(){
-        view.displayLoading()
         getMovieById.getSingle(movieId)
                 .map { it.toViewModel() }
+                .doOnSubscribe { view.displayLoading() }
                 .delayUntilActive()
+                .doFinally { view.dismissLoading() }
                 .subscribe({
                     view.displayMovie(it)
                 }, {
-
+                    view.displayError()
                 }).addTo(disposables)
     }
 }

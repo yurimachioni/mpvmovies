@@ -7,9 +7,10 @@ import io.reactivex.subjects.PublishSubject
 interface MovieListView : BaseView {
     val itemClicksObservable: Observable<String>
     val searchChangesSubject: PublishSubject<String>
+    val favoriteClicksObservable: Observable<MovieVM>
 
+    fun updateMovie(movieVM: MovieVM)
     fun displayMovies(list: List<MovieVM>)
-    fun displayToast(text: String)
     fun displayLoading()
     fun dismissLoading()
 }

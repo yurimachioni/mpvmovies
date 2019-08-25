@@ -2,4 +2,5 @@
     <string name="app_name">Liber Movies</string>
     <string name="year">Year: %1$s</string>
     <string name="search_by_name">Search by name</string>
+    <string name="imdb_rating">IMDb Rating: %1$s/10</string>
 </resources>

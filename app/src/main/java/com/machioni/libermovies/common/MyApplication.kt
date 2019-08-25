@@ -6,6 +6,7 @@ import com.evernote.android.state.StateSaver
 import com.machioni.libermovies.common.di.ApplicationComponent
 import com.machioni.libermovies.common.di.ApplicationModule
 import com.machioni.libermovies.common.di.DaggerApplicationComponent
+import com.pacoworks.rxpaper2.RxPaperBook
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.android.schedulers.AndroidSchedulers
 
@@ -18,6 +19,8 @@ class MyApplication : Application() {
         super.onCreate()
 
         setupRx()
+
+        RxPaperBook.init(this)
 
         StateSaver.setEnabledForAllActivitiesAndSupportFragments(this, true)
 

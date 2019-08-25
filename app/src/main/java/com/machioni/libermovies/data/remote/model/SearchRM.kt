@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class SearchRM(
         @SerializedName("Search")
-        val search: List<MovieRM>
+        val search: List<MovieRM>?
 )

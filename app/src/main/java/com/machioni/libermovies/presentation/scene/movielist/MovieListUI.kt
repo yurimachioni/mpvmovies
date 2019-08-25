@@ -29,12 +29,31 @@ class MovieListUI @Inject constructor() : BaseUI(), MovieListView {
     }
 
     override fun displayMovies(list: List<MovieVM>){
-        loadingLayout.visibility = View.GONE
+        errorTextView.visibility = View.GONE
+        movieRecycler.visibility = View.VISIBLE
         adapter.movies = list
     }
 
     override fun updateMovie(movieVM: MovieVM) {
         adapter.updateMovie(movieVM)
+    }
+
+    override fun displayInstructions() {
+        movieRecycler.visibility = View.GONE
+        errorTextView.visibility = View.VISIBLE
+        errorTextView.text = containerView.context.getString(R.string.type_to_search)
+    }
+
+    override fun displayEmptyState() {
+        movieRecycler.visibility = View.GONE
+        errorTextView.visibility = View.VISIBLE
+        errorTextView.text = containerView.context.getString(R.string.not_found)
+    }
+
+    override fun displayError() {
+        movieRecycler.visibility = View.GONE
+        errorTextView.visibility = View.VISIBLE
+        errorTextView.text = containerView.context.getString(R.string.error)
     }
 
     override fun displayLoading() {

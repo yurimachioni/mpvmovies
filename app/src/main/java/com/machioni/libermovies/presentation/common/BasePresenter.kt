@@ -15,6 +15,13 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.subjects.BehaviorSubject
 import ru.terrakok.cicerone.Router
+import android.app.Activity
+import android.content.Context
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
+
+
 
 abstract class BasePresenter : Fragment(), BackButtonListener, DisposableHolder by DisposableHolderDelegate() {
 
@@ -51,8 +58,6 @@ abstract class BasePresenter : Fragment(), BackButtonListener, DisposableHolder 
         super.onDestroy()
     }
 
-
-
     override fun onBackPressed(): Boolean {
         router.exit()
         return true
@@ -71,4 +76,13 @@ abstract class BasePresenter : Fragment(), BackButtonListener, DisposableHolder 
 
     //TODO find a better way for Completable that doesn't rely on converting to single. Straight conversion to flowable doesn't work for some reason
     fun Completable.delayUntilActive(): Completable = toSingleDefault(Unit).delayUntilActive().ignoreElement()
+
+    fun hideKeyboard() {
+        val imm = activity!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        var view = activity!!.currentFocus
+        if (view == null) {
+            view = View(activity)
+        }
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 }

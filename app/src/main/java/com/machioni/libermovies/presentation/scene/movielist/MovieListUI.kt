@@ -1,10 +1,8 @@
 package com.machioni.libermovies.presentation.scene.movielist
 
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.jakewharton.rxbinding2.widget.textChangeEvents
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.machioni.libermovies.R
 import com.machioni.libermovies.presentation.common.BaseUI
@@ -20,8 +18,9 @@ class MovieListUI @Inject constructor() : BaseUI(), MovieListView {
 
     private val adapter = MovieListAdapter()
 
-    override val itemClicksObservable: Observable<String> = adapter.onItemClick()
+    override val itemClicksObservable: Observable<String> = adapter.itemClicks()
     override val searchChangesSubject: PublishSubject<String> = PublishSubject.create()
+    override val favoriteClicksObservable: Observable<MovieVM> = adapter.favoriteClicks()
 
     override fun initViews(){
         movieRecycler.adapter = adapter
@@ -31,11 +30,11 @@ class MovieListUI @Inject constructor() : BaseUI(), MovieListView {
 
     override fun displayMovies(list: List<MovieVM>){
         loadingLayout.visibility = View.GONE
-        adapter.setData(list)
+        adapter.movies = list
     }
 
-    override fun displayToast(text: String) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    override fun updateMovie(movieVM: MovieVM) {
+        adapter.updateMovie(movieVM)
     }
 
     override fun displayLoading() {

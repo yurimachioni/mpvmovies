@@ -26,6 +26,8 @@ class MovieDetailUI @Inject constructor() : BaseUI(), MovieDetailView {
             sinopsisTextView.text = plot
             yearTextView.text = context.getString(R.string.year, year)
             durationTextView.text = duration
+            countryTextView.text = country
+            ratingTextView.text = containerView.context.getString(R.string.imdb_rating, imdbRating)
         }
     }
 

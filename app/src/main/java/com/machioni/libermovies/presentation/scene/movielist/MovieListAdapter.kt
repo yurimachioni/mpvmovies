@@ -1,7 +1,5 @@
 package com.machioni.libermovies.presentation.scene.movielist
 
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.machioni.libermovies.R
 import com.machioni.libermovies.presentation.common.GlideApp
 import com.xwray.groupie.GroupAdapter
@@ -13,14 +11,23 @@ import kotlinx.android.synthetic.main.movie_item.*
 
 class MovieListAdapter : GroupAdapter<ViewHolder>(){
 
-    private val onItemClickSubject: PublishSubject<String> = PublishSubject.create()
-    fun onItemClick(): Observable<String> = onItemClickSubject
+    private val itemClicksSubject: PublishSubject<String> = PublishSubject.create()
+    private val favoriteClicksSubject: PublishSubject<MovieVM> = PublishSubject.create()
 
-    fun setData(items: List<MovieVM>) {
+    fun itemClicks(): Observable<String> = itemClicksSubject
+    fun favoriteClicks(): Observable<MovieVM> = favoriteClicksSubject
+
+    var movies: List<MovieVM> = emptyList()
+    set(value) {
+        field = value
         clear()
+        addAll(value.map { MovieItem(it)})
+    }
 
-        items.forEach {
-            add(MovieItem(it))
+    fun updateMovie(movieVM: MovieVM){
+        movies.indexOfFirst { it.imdbId == movieVM.imdbId }.also {
+            removeGroup(it)
+            add(it, MovieItem(movieVM))
         }
     }
 
@@ -29,14 +36,22 @@ class MovieListAdapter : GroupAdapter<ViewHolder>(){
             with(viewHolder) {
                 GlideApp.with(viewHolder.containerView.context)
                         .load(movieVM.posterUrl)
-                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .fitCenter()
                         .placeholder(R.drawable.placeholder)
                         .error(R.drawable.error)
                         .into(posterImg)
+
+                GlideApp.with(viewHolder.containerView.context)
+                        .load(if(movieVM.isFavorite) R.drawable.favorite_on else R.drawable.favorite_off)
+                        .into(favoriteImageView)
+
                 titleText.text = movieVM.title
                 yearText.text = movieVM.year
                 itemParentView.setOnClickListener {
-                    onItemClickSubject.onNext(movieVM.imdbId)
+                    itemClicksSubject.onNext(movieVM.imdbId)
+                }
+                favoriteImageView.setOnClickListener {
+                    favoriteClicksSubject.onNext(movieVM)
                 }
             }
         }

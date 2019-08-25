@@ -8,5 +8,6 @@ data class DetailedMovie(
         val plot: String,
         val country: String,
         val duration: String,
-        val imdbRating: String
+        val imdbRating: String,
+        val isFavorite: Boolean = false
 )

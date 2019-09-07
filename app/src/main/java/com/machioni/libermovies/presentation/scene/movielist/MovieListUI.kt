@@ -7,7 +7,7 @@ import com.jakewharton.rxbinding2.widget.textChanges
 import com.machioni.libermovies.R
 import com.machioni.libermovies.presentation.common.BaseUI
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_movie_list.*
 import kotlinx.android.synthetic.main.loading.*
 import javax.inject.Inject
@@ -19,8 +19,9 @@ class MovieListUI @Inject constructor() : BaseUI(), MovieListView {
     private val adapter = MovieListAdapter()
 
     override val itemClicksObservable: Observable<String> = adapter.itemClicks()
-    override val searchChangesSubject: PublishSubject<String> = PublishSubject.create()
+    override val searchChangesSubject: BehaviorSubject<String> = BehaviorSubject.create()
     override val favoriteClicksObservable: Observable<MovieVM> = adapter.favoriteClicks()
+    override val listEndReachedObservable: Observable<Long> = adapter.listEndReached()
 
     override fun initViews(){
         movieRecycler.adapter = adapter
@@ -28,10 +29,14 @@ class MovieListUI @Inject constructor() : BaseUI(), MovieListView {
         searchEditText.textChanges().map { it.toString() }.subscribe(searchChangesSubject)
     }
 
-    override fun displayMovies(list: List<MovieVM>){
+    override fun displayMovies(movies: List<MovieVM>){
         errorTextView.visibility = View.GONE
         movieRecycler.visibility = View.VISIBLE
-        adapter.movies = list
+        adapter.setMovies(movies)
+    }
+
+    override fun addMovies(movies: List<MovieVM>) {
+        adapter.addMovies(movies)
     }
 
     override fun updateMovie(movieVM: MovieVM) {

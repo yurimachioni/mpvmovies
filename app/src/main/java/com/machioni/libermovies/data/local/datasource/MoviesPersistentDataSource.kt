@@ -11,14 +11,14 @@ class MoviesPersistentDataSource @Inject constructor(){
     val FAVORITES_KEY = "FAVORITES"
 
     fun addMovieToFavorites(id: String): Completable {
-        return RxPaperBook.with().read<Set<String>>(FAVORITES_KEY)
+        return getFavoriteMovies()
                 .flatMapCompletable {
                     RxPaperBook.with().write(FAVORITES_KEY, it.plus(id))
                 }
     }
 
-    fun removeMovieFromFavorits(id: String): Completable {
-        return RxPaperBook.with().read<Set<String>>(FAVORITES_KEY)
+    fun removeMovieFromFavorites(id: String): Completable {
+        return getFavoriteMovies()
                 .flatMapCompletable {
                     RxPaperBook.with().write(FAVORITES_KEY, it.minus(id))
                 }

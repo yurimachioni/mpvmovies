@@ -1,13 +1,14 @@
 package com.machioni.libermovies.presentation.scene.movielist
 
+import android.widget.Toast
 import com.machioni.libermovies.common.MyApplication
-import com.machioni.libermovies.domain.model.Movie
 import com.machioni.libermovies.domain.usecase.AddMovieToFavorites
-import com.machioni.libermovies.domain.usecase.GetMovies
+import com.machioni.libermovies.domain.usecase.SearchMovies
 import com.machioni.libermovies.domain.usecase.RemoveMovieFromFavorites
 import com.machioni.libermovies.presentation.common.BackButtonListener
 import com.machioni.libermovies.presentation.common.BasePresenter
 import com.machioni.libermovies.presentation.common.MovieDetailScreen
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_movie_list.*
@@ -20,13 +21,15 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
     override lateinit var view: MovieListView
 
     @Inject
-    lateinit var getMovies: GetMovies
+    lateinit var searchMovies: SearchMovies
 
     @Inject
     lateinit var addMoviesToFavorites: AddMovieToFavorites
 
     @Inject
     lateinit var removeMovieFromFavorites: RemoveMovieFromFavorites
+
+    private var totalResults = 0L
 
     init {
         MyApplication.daggerComponent.inject(this)
@@ -51,23 +54,18 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
                 .debounce(600, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .filter { it.length > 2 }
                 .distinctUntilChanged()
-                .switchMapCompletable {
-                    getMovies.getSingle(it)
-                            .map { it.map(Movie::toViewModel) }
-                            .doOnSubscribe { view.displayLoading() }
-                            .delayUntilActive()
-                            .doOnSuccess { movies ->
-                                if (movies.isEmpty())
-                                    view.displayEmptyState()
-                                else
-                                    view.displayMovies(movies)
-                            }
-                            .doOnError { view.displayError() }
-                            .doFinally { view.dismissLoading() }
-                            .ignoreElement()
-                            .onErrorComplete()
+                .switchMapCompletable { searchQuery ->
+                    searchMovies(searchQuery, 1)
                 }.subscribe()
                 .addTo(disposables)
+
+        view.listEndReachedObservable.flatMapCompletable { listSize ->
+            if(listSize < totalResults){
+                val searchQuery = view.searchChangesSubject.value ?: ""
+                val nextPage = (listSize / 10L) + 1
+                searchMovies(searchQuery, nextPage)
+            } else Completable.complete()
+        }.subscribe().addTo(disposables)
 
         view.favoriteClicksObservable.flatMapCompletable {
             (if (it.isFavorite)
@@ -76,8 +74,31 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
                 addMoviesToFavorites.getCompletable(it.imdbId))
                     .delayUntilActive()
                     .doOnComplete { view.updateMovie(it.copy(isFavorite = !it.isFavorite)) }
+                    .doOnError { view.displayToast("Can't set favorite") }
                     .onErrorComplete()
         }.subscribe().addTo(disposables)
+    }
+
+    private fun searchMovies(searchQuery: String, page: Long) : Completable {
+        return searchMovies.getSingle(SearchMovies.Request(searchQuery, page))
+                .map { it.toViewModel() }
+                .doOnSubscribe { view.displayLoading() }
+                .delayUntilActive()
+                .doOnSuccess { moviesPage ->
+                    totalResults = moviesPage.totalResults
+                    if (moviesPage.items.isEmpty())
+                        view.displayEmptyState()
+                    else {
+                        if(page == 1L)
+                            view.displayMovies(moviesPage.items)
+                        else
+                            view.addMovies(moviesPage.items)
+                    }
+                }
+                .doOnError { view.displayError() }
+                .doFinally { view.dismissLoading() }
+                .ignoreElement()
+                .onErrorComplete()
     }
 
 }

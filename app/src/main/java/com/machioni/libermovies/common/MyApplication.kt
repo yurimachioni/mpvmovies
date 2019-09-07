@@ -24,9 +24,7 @@ class MyApplication : Application() {
 
         StateSaver.setEnabledForAllActivitiesAndSupportFragments(this, true)
 
-        daggerComponent = DaggerApplicationComponent.builder()
-                .applicationModule(ApplicationModule(applicationContext))
-                .build()
+        daggerComponent = DaggerApplicationComponent.factory().create(this)
     }
 
     fun setupRx(){

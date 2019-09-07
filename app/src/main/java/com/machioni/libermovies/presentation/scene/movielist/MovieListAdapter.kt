@@ -13,25 +13,33 @@ class MovieListAdapter : GroupAdapter<ViewHolder>(){
 
     private val itemClicksSubject: PublishSubject<String> = PublishSubject.create()
     private val favoriteClicksSubject: PublishSubject<MovieVM> = PublishSubject.create()
+    private val listEndReachedSubject: PublishSubject<Long> = PublishSubject.create()
 
     fun itemClicks(): Observable<String> = itemClicksSubject
     fun favoriteClicks(): Observable<MovieVM> = favoriteClicksSubject
+    fun listEndReached(): Observable<Long> = listEndReachedSubject
 
-    var movies: List<MovieVM> = emptyList()
-    set(value) {
-        field = value
+    var movieList: List<MovieVM> = emptyList()
+
+    fun setMovies(movies: List<MovieVM>) {
+        movieList = movies
         clear()
-        addAll(value.map { MovieItem(it)})
+        addAll(movies.map { MovieItem(it)})
+    }
+
+    fun addMovies(movies: List<MovieVM>){
+        movieList = movieList + movies
+        addAll(movies.map { MovieItem(it) })
     }
 
     fun updateMovie(movieVM: MovieVM){
-        movies.indexOfFirst { it.imdbId == movieVM.imdbId }.also {
-            removeGroup(it)
-            add(it, MovieItem(movieVM))
+        movieList.indexOfFirst { it.imdbId == movieVM.imdbId }.also { position ->
+            (getItem(position) as? MovieItem)?.movieVM = movieVM
+            notifyItemChanged(position)
         }
     }
 
-    inner class MovieItem(private val movieVM: MovieVM) : Item() {
+    inner class MovieItem(var movieVM: MovieVM) : Item() {
         override fun bind(viewHolder: ViewHolder, position: Int) {
             with(viewHolder) {
                 GlideApp.with(viewHolder.containerView.context)
@@ -53,6 +61,8 @@ class MovieListAdapter : GroupAdapter<ViewHolder>(){
                 favoriteImageView.setOnClickListener {
                     favoriteClicksSubject.onNext(movieVM)
                 }
+                if(position == movieList.size - 1)
+                    listEndReachedSubject.onNext(movieList.size.toLong())
             }
         }
 

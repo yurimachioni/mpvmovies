@@ -12,4 +12,6 @@ interface BaseView : LayoutContainer {
 
     fun inflate(context: Context, parent: ViewGroup?) : View?
     fun initViews()
+    fun displayToast(text: String)
+    fun displayToast(@StringRes text: Int)
 }

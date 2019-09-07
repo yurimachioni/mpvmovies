@@ -3,7 +3,7 @@ package com.machioni.libermovies.presentation.scene.movielist
 import androidx.lifecycle.Lifecycle
 import com.machioni.libermovies.common.MyApplication
 import com.machioni.libermovies.domain.model.Movie
-import com.machioni.libermovies.domain.usecase.GetMovies
+import com.machioni.libermovies.domain.usecase.SearchMovies
 import io.mockk.*
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -14,7 +14,7 @@ import ru.terrakok.cicerone.Router
 internal class MovieListPresenterTest{
     private val fragment by lazy { spyk<MovieListPresenter>(recordPrivateCalls = true) }
     private val view = mockk<MovieListView>(relaxed = true)
-    private val getMovies = mockk<GetMovies>(relaxed = true)
+    private val getMovies = mockk<SearchMovies>(relaxed = true)
     private val router = mockk<Router>(relaxed = true)
 
     @BeforeEach
@@ -22,7 +22,7 @@ internal class MovieListPresenterTest{
         mockkObject(MyApplication.Companion)
         every { MyApplication.daggerComponent } returns mockk(relaxed = true)
         fragment.view = view
-        fragment.getMovies = getMovies
+        fragment.searchMovies = getMovies
         every { fragment.router } returns router
     }
 

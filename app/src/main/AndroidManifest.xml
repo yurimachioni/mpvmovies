@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.machioni.libermovies">
+    package="com.machioni.mpvmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.machioni.libermovies.common.MyApplication"
+        android:name="com.machioni.mpvmovies.common.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -16,7 +16,7 @@
         android:usesCleartextTraffic="${usesCleartextTraffic}"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
         <activity
-            android:name="com.machioni.libermovies.presentation.common.MainActivity"
+            android:name="com.machioni.mpvmovies.presentation.common.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

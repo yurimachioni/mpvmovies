@@ -1,14 +1,16 @@
 package com.machioni.mpvmovies.presentation.scene.movielist
 
-import android.widget.Toast
+import com.machioni.mpvmovies.common.MOVIE_PAGE_SIZE
 import com.machioni.mpvmovies.common.MyApplication
+import com.machioni.mpvmovies.common.di.MainScheduler
 import com.machioni.mpvmovies.domain.usecase.AddMovieToFavorites
-import com.machioni.mpvmovies.domain.usecase.SearchMovies
+import com.machioni.mpvmovies.domain.usecase.GetMovies
 import com.machioni.mpvmovies.domain.usecase.RemoveMovieFromFavorites
 import com.machioni.mpvmovies.presentation.common.BackButtonListener
 import com.machioni.mpvmovies.presentation.common.BasePresenter
 import com.machioni.mpvmovies.presentation.common.MovieDetailScreen
 import io.reactivex.Completable
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_movie_list.*
@@ -21,13 +23,17 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
     override lateinit var view: MovieListView
 
     @Inject
-    lateinit var searchMovies: SearchMovies
+    lateinit var getMovies: GetMovies
 
     @Inject
     lateinit var addMoviesToFavorites: AddMovieToFavorites
 
     @Inject
     lateinit var removeMovieFromFavorites: RemoveMovieFromFavorites
+
+    @Inject
+    @field:MainScheduler
+    lateinit var delayScheduler: Scheduler
 
     private var totalResults = 0L
 
@@ -46,12 +52,12 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
 
     private fun bindToView() {
         view.itemClicksObservable.subscribe { movieId ->
-            searchEditText.clearFocus()
+            view.clearFocus()
             router.navigateTo(MovieDetailScreen(movieId))
         }.addTo(disposables)
 
         view.searchChangesSubject
-                .debounce(600, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .debounce(600, TimeUnit.MILLISECONDS, delayScheduler)
                 .filter { it.length > 2 }
                 .distinctUntilChanged()
                 .switchMapCompletable { searchQuery ->
@@ -62,7 +68,7 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
         view.listEndReachedObservable.flatMapCompletable { listSize ->
             if(listSize < totalResults){
                 val searchQuery = view.searchChangesSubject.value ?: ""
-                val nextPage = (listSize / 10L) + 1
+                val nextPage = (listSize / MOVIE_PAGE_SIZE) + 1
                 searchMovies(searchQuery, nextPage)
             } else Completable.complete()
         }.subscribe().addTo(disposables)
@@ -80,7 +86,7 @@ class MovieListPresenter : BasePresenter(), BackButtonListener {
     }
 
     private fun searchMovies(searchQuery: String, page: Long) : Completable {
-        return searchMovies.getSingle(SearchMovies.Request(searchQuery, page))
+        return getMovies.getSingle(GetMovies.Request(searchQuery, page))
                 .map { it.toViewModel() }
                 .doOnSubscribe { view.displayLoading() }
                 .delayUntilActive()

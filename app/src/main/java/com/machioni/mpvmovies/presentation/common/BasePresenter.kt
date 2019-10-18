@@ -1,12 +1,15 @@
 package com.machioni.mpvmovies.presentation.common
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.GenericLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.machioni.mpvmovies.common.rx.DisposableHolder
 import com.machioni.mpvmovies.common.rx.DisposableHolderDelegate
 import io.reactivex.BackpressureStrategy
@@ -15,12 +18,6 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.subjects.BehaviorSubject
 import ru.terrakok.cicerone.Router
-import android.app.Activity
-import android.content.Context
-import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
-
 
 
 abstract class BasePresenter : Fragment(), BackButtonListener, DisposableHolder by DisposableHolderDelegate() {
@@ -32,7 +29,11 @@ abstract class BasePresenter : Fragment(), BackButtonListener, DisposableHolder 
     val lifecycleSubject = BehaviorSubject.create<Lifecycle.Event>()
 
     init {
-        lifecycle.addObserver(GenericLifecycleObserver { _, event -> lifecycleSubject.onNext(event) })
+        lifecycle.addObserver(object: LifecycleEventObserver{
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                lifecycleSubject.onNext(event)
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -78,11 +79,11 @@ abstract class BasePresenter : Fragment(), BackButtonListener, DisposableHolder 
     fun Completable.delayUntilActive(): Completable = toSingleDefault(Unit).delayUntilActive().ignoreElement()
 
     fun hideKeyboard() {
-        val imm = activity!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        var view = activity!!.currentFocus
+        val imm = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+        var view = activity?.currentFocus
         if (view == null) {
             view = View(activity)
         }
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

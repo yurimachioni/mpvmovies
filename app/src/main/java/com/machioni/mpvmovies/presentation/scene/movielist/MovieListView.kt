@@ -19,4 +19,5 @@ interface MovieListView : BaseView {
     fun displayError()
     fun displayLoading()
     fun dismissLoading()
+    fun clearFocus()
 }

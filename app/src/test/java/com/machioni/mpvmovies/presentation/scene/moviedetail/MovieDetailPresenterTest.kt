@@ -2,6 +2,7 @@ package com.machioni.mpvmovies.presentation.scene.moviedetail
 
 import androidx.lifecycle.Lifecycle
 import com.machioni.mpvmovies.common.MyApplication
+import com.machioni.mpvmovies.domain.model.DetailedMovie
 import com.machioni.mpvmovies.domain.model.Movie
 import com.machioni.mpvmovies.domain.usecase.GetMovieById
 import io.mockk.*
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test
 import ru.terrakok.cicerone.Router
 
 internal class MovieDetailPresenterTest{
-    private val id = 1
+    private val id = "1"
     private val fragment by lazy { spyk(MovieDetailPresenter.newInstance(id), recordPrivateCalls = true) }
     private val view = mockk<MovieDetailView>(relaxed = true)
     private val getMovieById = mockk<GetMovieById>(relaxed = true)
@@ -30,14 +31,14 @@ internal class MovieDetailPresenterTest{
     @Test
     fun `on first load, the passed movie is retrieved by id and the view is called to display it`(){
         //given
-        every { getMovieById.getSingle(any()) } returns Single.just(Movie(id))
+        every { getMovieById.getSingle(any()) } returns Single.just(DetailedMovie("","",id,"","","","","",false))
 
         //when
         fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
         fragment.onViewCreated(mockk(relaxed = true), null)
 
         //then
-        verifyOrder {
+        verify {
             view.displayLoading()
             getMovieById.getSingle(id)
             view.displayMovie(any())
@@ -47,7 +48,7 @@ internal class MovieDetailPresenterTest{
     @Test
     fun `the content is not refreshed when the view is recreated`(){
         //given
-        every { getMovieById.getSingle(any()) } returns Single.just(Movie(1))
+        every { getMovieById.getSingle(any()) } returns Single.just(DetailedMovie("","",id,"","","","","",false))
 
         //when
         fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)

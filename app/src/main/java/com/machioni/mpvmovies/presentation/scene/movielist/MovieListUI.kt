@@ -68,4 +68,8 @@ class MovieListUI @Inject constructor() : BaseUI(), MovieListView {
     override fun dismissLoading() {
         loadingLayout.visibility = View.GONE
     }
+
+    override fun clearFocus() {
+        searchEditText.clearFocus()
+    }
 }

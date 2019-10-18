@@ -23,12 +23,11 @@ class ApplicationModule {
 
     @Provides
     @BackgroundScheduler
-    fun backgroundScheduler() = Schedulers.io()
+    fun backgroundScheduler() : Scheduler = Schedulers.io()
 
     @Provides
-    @Singleton
     @MainScheduler
-    fun mainScheduler() = AndroidSchedulers.mainThread()
+    fun mainScheduler() : Scheduler = AndroidSchedulers.mainThread()
 
     @Provides
     fun movieDetailView(movieDetailUI: MovieDetailUI): MovieDetailView {

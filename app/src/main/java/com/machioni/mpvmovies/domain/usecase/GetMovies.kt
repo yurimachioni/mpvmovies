@@ -10,10 +10,10 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
-class SearchMovies @Inject constructor(@BackgroundScheduler executorScheduler: Scheduler,
-                                       @MainScheduler postExecutionScheduler: Scheduler,
-                                       private val moviesRepositoryInterface: MoviesRepositoryInterface)
-    : SingleUseCase<Page<Movie>, SearchMovies.Request>(executorScheduler, postExecutionScheduler) {
+class GetMovies @Inject constructor(@BackgroundScheduler executorScheduler: Scheduler,
+                                    @MainScheduler postExecutionScheduler: Scheduler,
+                                    private val moviesRepositoryInterface: MoviesRepositoryInterface)
+    : SingleUseCase<Page<Movie>, GetMovies.Request>(executorScheduler, postExecutionScheduler) {
 
     override fun getRawSingle(param: Request): Single<Page<Movie>> {
         return moviesRepositoryInterface.searchMovies(param.searchQuery, param.page)

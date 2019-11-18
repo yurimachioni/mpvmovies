@@ -18,7 +18,7 @@ import ru.terrakok.cicerone.Router
 import java.util.concurrent.TimeUnit
 
 internal class MovieListPresenterTest{
-    private val fragment by lazy { spyk<MovieListPresenter>(recordPrivateCalls = true) }
+    private val presenter by lazy { spyk<MovieListPresenter>(recordPrivateCalls = true) }
     private val view = mockk<MovieListView>(relaxed = true)
     private val getMovies = mockk<GetMovies>(relaxed = true)
     private val router = mockk<Router>(relaxed = true)
@@ -30,10 +30,10 @@ internal class MovieListPresenterTest{
     fun setup(){
         mockkObject(MyApplication.Companion)
         every { MyApplication.daggerComponent } returns mockk(relaxed = true)
-        fragment.view = view
-        fragment.getMovies = getMovies
-        fragment.delayScheduler = delayScheduler
-        every { fragment.router } returns router
+        presenter.view = view
+        presenter.getMovies = getMovies
+        presenter.delayScheduler = delayScheduler
+        every { presenter.router } returns router
 
         every { view.searchChangesSubject } returns mockSearchChangesSubject
         every { view.listEndReachedObservable } returns mockListEndReachedSubject
@@ -45,8 +45,8 @@ internal class MovieListPresenterTest{
         every { getMovies.getSingle(any()) } returns Single.just(Page(listOf(Movie("1","2","3","4", false)), 1))
 
         //when
-        fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
-        fragment.onViewCreated(mockk(relaxed = true), null)
+        presenter.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
+        presenter.onViewCreated(mockk(relaxed = true), null)
         mockSearchChangesSubject.onNext("har")
         delayScheduler.advanceTimeBy(900, TimeUnit.MILLISECONDS)
 
@@ -64,8 +64,9 @@ internal class MovieListPresenterTest{
         every { getMovies.getSingle(any()) } returns Single.just(Page(listOf(Movie("1","2","3","4", false)), 10))
 
         //when
-        fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
-        fragment.onViewCreated(mockk(relaxed = true), null)
+        presenter.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
+        presenter.onViewCreated(mockk(relaxed = true), null)
+        mockSearchChangesSubject.onNext("ha")
         delayScheduler.advanceTimeBy(900, TimeUnit.MILLISECONDS)
 
         //then
@@ -77,22 +78,23 @@ internal class MovieListPresenterTest{
     }
 
     @Test
-    fun `when the end of the list is reached, calls getMovies use case to get the next page if there are more results`(){
+    fun `when the end of the list is reached, calls getMovies use case to get the next page if there are more results and adds them to the end of the list`(){
         //given
         every { getMovies.getSingle(any()) } returns Single.just(Page(List(10) { Movie("1","2","3","4", false) }, 20))
 
         //when
-        fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
-        fragment.onViewCreated(mockk(relaxed = true), null)
+        presenter.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
+        presenter.onViewCreated(mockk(relaxed = true), null)
         mockSearchChangesSubject.onNext("har")
         delayScheduler.advanceTimeBy(900, TimeUnit.MILLISECONDS)
         mockListEndReachedSubject.onNext(MOVIE_PAGE_SIZE)
 
         //then
-        verify {
-            view.displayLoading()
-            getMovies.getSingle(match { it.page == 2L })
+        verifyOrder {
+            getMovies.getSingle(match { it.page == 1L })
             view.displayMovies(any())
+            getMovies.getSingle(match { it.page == 2L })
+            view.addMovies(any())
         }
     }
 
@@ -102,8 +104,8 @@ internal class MovieListPresenterTest{
         every { getMovies.getSingle(any()) } returns Single.just(Page(listOf(Movie("1","2","3","4", false)), 1))
 
         //when
-        fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
-        fragment.onViewCreated(mockk(relaxed = true), null)
+        presenter.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
+        presenter.onViewCreated(mockk(relaxed = true), null)
         mockSearchChangesSubject.onNext("har")
         delayScheduler.advanceTimeBy(900, TimeUnit.MILLISECONDS)
         mockListEndReachedSubject.onNext(MOVIE_PAGE_SIZE)
@@ -117,15 +119,15 @@ internal class MovieListPresenterTest{
     }
 
     @Test
-    fun `when an item is clicked on the view, it displays a toast and navigates to details of the item`(){
+    fun `when an item is clicked on the view, navigates to details of the item`(){
         //given
         val id = "1"
         every { view.itemClicksObservable } returns Observable.just(id)
         every { router.navigateTo(any()) } just Runs
 
         //when
-        fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
-        fragment.onViewCreated(mockk(relaxed = true), null)
+        presenter.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
+        presenter.onViewCreated(mockk(relaxed = true), null)
 
         //then
         verify {

@@ -3,7 +3,6 @@ package com.machioni.mpvmovies.presentation.scene.moviedetail
 import androidx.lifecycle.Lifecycle
 import com.machioni.mpvmovies.common.MyApplication
 import com.machioni.mpvmovies.domain.model.DetailedMovie
-import com.machioni.mpvmovies.domain.model.Movie
 import com.machioni.mpvmovies.domain.usecase.GetMovieById
 import io.mockk.*
 import io.reactivex.Single
@@ -13,7 +12,7 @@ import ru.terrakok.cicerone.Router
 
 internal class MovieDetailPresenterTest{
     private val id = "1"
-    private val fragment by lazy { spyk(MovieDetailPresenter.newInstance(id), recordPrivateCalls = true) }
+    private val presenter by lazy { spyk(MovieDetailPresenter.newInstance(id), recordPrivateCalls = true) }
     private val view = mockk<MovieDetailView>(relaxed = true)
     private val getMovieById = mockk<GetMovieById>(relaxed = true)
     private val router = mockk<Router>(relaxed = true)
@@ -22,10 +21,10 @@ internal class MovieDetailPresenterTest{
     fun setup(){
         mockkObject(MyApplication.Companion)
         every { MyApplication.daggerComponent } returns mockk(relaxed = true)
-        fragment.view = view
-        fragment.getMovieById = getMovieById
-        every { fragment.router } returns router
-        fragment.movieId = id
+        presenter.view = view
+        presenter.getMovieById = getMovieById
+        every { presenter.router } returns router
+        presenter.movieId = id
     }
 
     @Test
@@ -34,8 +33,8 @@ internal class MovieDetailPresenterTest{
         every { getMovieById.getSingle(any()) } returns Single.just(DetailedMovie("","",id,"","","","","",false))
 
         //when
-        fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
-        fragment.onViewCreated(mockk(relaxed = true), null)
+        presenter.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
+        presenter.onViewCreated(mockk(relaxed = true), null)
 
         //then
         verify {
@@ -51,9 +50,9 @@ internal class MovieDetailPresenterTest{
         every { getMovieById.getSingle(any()) } returns Single.just(DetailedMovie("","",id,"","","","","",false))
 
         //when
-        fragment.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
-        fragment.onViewCreated(mockk(relaxed = true), null)
-        fragment.onViewCreated(mockk(relaxed = true), mockk())
+        presenter.lifecycleSubject.onNext(Lifecycle.Event.ON_RESUME)
+        presenter.onViewCreated(mockk(relaxed = true), null)
+        presenter.onViewCreated(mockk(relaxed = true), mockk())
 
         //then
         verify(exactly = 1) {

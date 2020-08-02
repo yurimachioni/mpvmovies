@@ -2,9 +2,10 @@ package com.machioni.mpvmovies.presentation.scene.moviedetail
 
 import com.evernote.android.state.State
 import com.machioni.mpvmovies.common.MyApplication
-import com.machioni.mpvmovies.domain.usecase.GetMovieById
+import com.machioni.mpvmovies.domain.model.DetailedMovie
 import com.machioni.mpvmovies.presentation.common.BackButtonListener
 import com.machioni.mpvmovies.presentation.common.BasePresenter
+import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
@@ -14,7 +15,8 @@ class MovieDetailPresenter : BasePresenter(), BackButtonListener {
     override lateinit var view: MovieDetailView
 
     @Inject
-    lateinit var getMovieById: GetMovieById
+    @JvmSuppressWildcards
+    lateinit var getMovieById: (String) -> Single<DetailedMovie>
 
     @State
     var movieId = "-1"
@@ -33,7 +35,7 @@ class MovieDetailPresenter : BasePresenter(), BackButtonListener {
     }
 
     private fun getMovieById(){
-        getMovieById.getSingle(movieId)
+        getMovieById(movieId)
                 .map { it.toViewModel() }
                 .doOnSubscribe { view.displayLoading() }
                 .delayUntilActive()

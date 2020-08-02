@@ -2,7 +2,9 @@ package com.machioni.mpvmovies.common.di
 
 import android.content.Context
 import com.machioni.mpvmovies.data.repository.MoviesRepository
+import com.machioni.mpvmovies.domain.model.DetailedMovie
 import com.machioni.mpvmovies.domain.repositoryinterface.MoviesRepositoryInterface
+import com.machioni.mpvmovies.domain.usecase.getMovieById
 import com.machioni.mpvmovies.presentation.scene.moviedetail.MovieDetailPresenter
 import com.machioni.mpvmovies.presentation.scene.moviedetail.MovieDetailUI
 import com.machioni.mpvmovies.presentation.scene.moviedetail.MovieDetailView
@@ -14,6 +16,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Singleton
@@ -43,6 +46,11 @@ class ApplicationModule {
     @Singleton
     fun moviesRepository(moviesRepository: MoviesRepository): MoviesRepositoryInterface {
         return moviesRepository
+    }
+
+    @Provides
+    fun curryGetMovieByid(moviesRepository: MoviesRepository) : (String) -> Single<DetailedMovie> {
+        return { id -> getMovieById(id, moviesRepository) }
     }
 }
 

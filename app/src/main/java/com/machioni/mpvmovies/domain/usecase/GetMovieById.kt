@@ -7,12 +7,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 
-fun getMovieById(id: String, moviesRepository: MoviesRepositoryInterface) : Single<DetailedMovie> {
+inline class GetMovieById(override val func: (String) -> Single<DetailedMovie>) : UseCase<String, Single<DetailedMovie>>
+
+fun getMovieById(id: String, moviesRepository: MoviesRepositoryInterface): Single<DetailedMovie> {
     return moviesRepository.getMovieDetails(id)
             .zipWith(moviesRepository.getFavoriteMovies(),
-                        BiFunction { movie: DetailedMovie, favoriteIds: Set<String> ->
-                            movie.copy(isFavorite = favoriteIds.contains(movie.imdbId))
-                        })
+                    BiFunction { movie: DetailedMovie, favoriteIds: Set<String> ->
+                        movie.copy(isFavorite = favoriteIds.contains(movie.imdbId))
+                    })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 }

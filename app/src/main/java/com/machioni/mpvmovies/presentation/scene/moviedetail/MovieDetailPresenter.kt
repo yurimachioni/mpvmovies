@@ -2,7 +2,9 @@ package com.machioni.mpvmovies.presentation.scene.moviedetail
 
 import com.evernote.android.state.State
 import com.machioni.mpvmovies.common.MyApplication
+import com.machioni.mpvmovies.common.di.ApplicationComponent
 import com.machioni.mpvmovies.domain.model.DetailedMovie
+import com.machioni.mpvmovies.domain.usecase.GetMovieById
 import com.machioni.mpvmovies.presentation.common.BackButtonListener
 import com.machioni.mpvmovies.presentation.common.BasePresenter
 import io.reactivex.Single
@@ -14,15 +16,16 @@ class MovieDetailPresenter : BasePresenter(), BackButtonListener {
     @Inject
     override lateinit var view: MovieDetailView
 
-    @Inject
-    @JvmSuppressWildcards
-    lateinit var getMovieById: (String) -> Single<DetailedMovie>
+    val getMovieById: GetMovieById
 
     @State
     var movieId = "-1"
 
     init{
-        MyApplication.daggerComponent.inject(this)
+        val component : ApplicationComponent = MyApplication.daggerComponent
+        component.inject(this)
+
+        getMovieById = component.curryGetMovieById()
     }
 
     companion object {

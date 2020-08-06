@@ -4,6 +4,7 @@ import android.content.Context
 import com.machioni.mpvmovies.data.repository.MoviesRepository
 import com.machioni.mpvmovies.domain.model.DetailedMovie
 import com.machioni.mpvmovies.domain.repositoryinterface.MoviesRepositoryInterface
+import com.machioni.mpvmovies.domain.usecase.GetMovieById
 import com.machioni.mpvmovies.domain.usecase.getMovieById
 import com.machioni.mpvmovies.presentation.scene.moviedetail.MovieDetailPresenter
 import com.machioni.mpvmovies.presentation.scene.moviedetail.MovieDetailUI
@@ -49,8 +50,8 @@ class ApplicationModule {
     }
 
     @Provides
-    fun curryGetMovieByid(moviesRepository: MoviesRepository) : (String) -> Single<DetailedMovie> {
-        return { id -> getMovieById(id, moviesRepository) }
+    fun curryGetMovieById(moviesRepository: MoviesRepository) : GetMovieById {
+        return GetMovieById { id -> getMovieById(id, moviesRepository) }
     }
 }
 
@@ -71,4 +72,6 @@ interface ApplicationComponent {
 
     fun inject(movieDetailFragment: MovieDetailPresenter)
     fun inject(movieListPresenter: MovieListPresenter)
+
+    fun curryGetMovieById() : GetMovieById
 }
